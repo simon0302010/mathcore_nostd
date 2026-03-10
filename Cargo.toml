@@ -1,6 +1,6 @@
 [package]
 name = "mathcore_nostd"
-version = "0.3.1"
+version = "0.3.2"
 edition = "2021"
 authors = ["Mehmet Yilmaz <mehmet@nonanti.dev>", "simon0302010 <simon@hackclub.app>"]
 description = "Symbolic math library and computer algebra system for Rust. Forked to work in no_std environments."
