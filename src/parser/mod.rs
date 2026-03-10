@@ -351,4 +351,154 @@ mod tests {
         let expr = Parser::parse("2 * 3 ^ 4").unwrap();
         println!("{}", expr);
     }
+
+    #[test]
+    fn test_extract_variables_single() {
+        let expr = Parser::parse("x").unwrap();
+        let vars = expr.extract_variables();
+        assert_eq!(vars.len(), 1);
+        assert!(vars.contains("x"));
+    }
+
+    #[test]
+    fn test_extract_variables_multiple() {
+        let expr = Parser::parse("x + y").unwrap();
+        let vars = expr.extract_variables();
+        assert_eq!(vars.len(), 2);
+        assert!(vars.contains("x"));
+        assert!(vars.contains("y"));
+    }
+
+    #[test]
+    fn test_extract_variables_repeated() {
+        let expr = Parser::parse("x + x + y").unwrap();
+        let vars = expr.extract_variables();
+        assert_eq!(vars.len(), 2);
+        assert!(vars.contains("x"));
+        assert!(vars.contains("y"));
+    }
+
+    #[test]
+    fn test_extract_variables_polynomial() {
+        let expr = Parser::parse("x^2 + 3*x*y - z").unwrap();
+        let vars = expr.extract_variables();
+        assert_eq!(vars.len(), 3);
+        assert!(vars.contains("x"));
+        assert!(vars.contains("y"));
+        assert!(vars.contains("z"));
+    }
+
+    #[test]
+    fn test_extract_variables_function_args() {
+        let expr = Parser::parse("sin(x) + cos(y)").unwrap();
+        let vars = expr.extract_variables();
+        assert_eq!(vars.len(), 2);
+        assert!(vars.contains("x"));
+        assert!(vars.contains("y"));
+    }
+
+    #[test]
+    fn test_extract_variables_nested_function() {
+        let expr = Parser::parse("sin(max(x, y) + z)").unwrap();
+        let vars = expr.extract_variables();
+        assert_eq!(vars.len(), 3);
+        assert!(vars.contains("x"));
+        assert!(vars.contains("y"));
+        assert!(vars.contains("z"));
+    }
+
+    #[test]
+    fn test_extract_variables_complex_expression() {
+        let expr = Parser::parse("x^2 + 2*x*y + y^2 - 4*z").unwrap();
+        let vars = expr.extract_variables();
+        assert_eq!(vars.len(), 3);
+        assert!(vars.contains("x"));
+        assert!(vars.contains("y"));
+        assert!(vars.contains("z"));
+    }
+
+    #[test]
+    fn test_extract_variables_no_variables() {
+        let expr = Parser::parse("42 + 3.14").unwrap();
+        let vars = expr.extract_variables();
+        assert_eq!(vars.len(), 0);
+    }
+
+    #[test]
+    fn test_extract_variables_with_constants() {
+        let expr = Parser::parse("2*x + 5").unwrap();
+        let vars = expr.extract_variables();
+        assert_eq!(vars.len(), 1);
+        assert!(vars.contains("x"));
+    }
+
+    #[test]
+    fn test_extract_variables_multichar_names() {
+        let expr = Parser::parse("alpha + beta_1 - gamma_2").unwrap();
+        let vars = expr.extract_variables();
+        assert_eq!(vars.len(), 3);
+        assert!(vars.contains("alpha"));
+        assert!(vars.contains("beta_1"));
+        assert!(vars.contains("gamma_2"));
+    }
+
+    #[test]
+    fn test_extract_variables_order_is_sorted() {
+        let expr = Parser::parse("z + a + m").unwrap();
+        let vars = expr.extract_variables();
+        let vars_vec: alloc::vec::Vec<_> = vars.iter().collect();
+        // BTreeSet is automatically sorted
+        assert_eq!(vars_vec.len(), 3);
+        assert_eq!(vars_vec[0], &"a".to_string());
+        assert_eq!(vars_vec[1], &"m".to_string());
+        assert_eq!(vars_vec[2], &"z".to_string());
+    }
+
+    #[test]
+    fn test_extract_variables_with_operations() {
+        let expr = Parser::parse("x * y / z + a - b % c").unwrap();
+        let vars = expr.extract_variables();
+        assert_eq!(vars.len(), 6);
+        assert!(vars.contains("x"));
+        assert!(vars.contains("y"));
+        assert!(vars.contains("z"));
+        assert!(vars.contains("a"));
+        assert!(vars.contains("b"));
+        assert!(vars.contains("c"));
+    }
+
+    #[test]
+    fn test_extract_variables_with_absolute_value() {
+        let expr = Parser::parse("|x - y|").unwrap();
+        let vars = expr.extract_variables();
+        assert_eq!(vars.len(), 2);
+        assert!(vars.contains("x"));
+        assert!(vars.contains("y"));
+    }
+
+    #[test]
+    fn test_extract_variables_with_unary_minus() {
+        let expr = Parser::parse("-x + y").unwrap();
+        let vars = expr.extract_variables();
+        assert_eq!(vars.len(), 2);
+        assert!(vars.contains("x"));
+        assert!(vars.contains("y"));
+    }
+
+    #[test]
+    fn test_extract_variables_factorial() {
+        let expr = Parser::parse("x! + y").unwrap();
+        let vars = expr.extract_variables();
+        assert_eq!(vars.len(), 2);
+        assert!(vars.contains("x"));
+        assert!(vars.contains("y"));
+    }
+
+    #[test]
+    fn test_extract_variables_complex_number() {
+        let expr = Parser::parse("3+4i + x").unwrap();
+        let vars = expr.extract_variables();
+        assert_eq!(vars.len(), 1);
+        assert!(vars.contains("x"));
+    }
 }

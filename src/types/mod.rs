@@ -174,6 +174,56 @@ impl Expr {
             _ => 0,
         }
     }
+
+    /// Extract all unique variables from the expression as a sorted set
+    pub fn extract_variables(&self) -> alloc::collections::BTreeSet<String> {
+        let mut vars = alloc::collections::BTreeSet::new();
+        self.collect_variables(&mut vars);
+        vars
+    }
+
+    /// Helper method to recursively collect variables
+    fn collect_variables(&self, vars: &mut alloc::collections::BTreeSet<String>) {
+        match self {
+            Expr::Number(_) | Expr::Complex(_) => {
+                // Terminals - no variables
+            }
+            Expr::Symbol(name) => {
+                vars.insert(name.clone());
+            }
+            Expr::Binary { left, right, .. } => {
+                left.collect_variables(vars);
+                right.collect_variables(vars);
+            }
+            Expr::Unary { expr, .. } => {
+                expr.collect_variables(vars);
+            }
+            Expr::Function { args, .. } => {
+                for arg in args {
+                    arg.collect_variables(vars);
+                }
+            }
+            Expr::Derivative { expr, var, .. } => {
+                expr.collect_variables(vars);
+                vars.insert(var.clone());
+            }
+            Expr::Integral {
+                expr,
+                var,
+                lower,
+                upper,
+            } => {
+                expr.collect_variables(vars);
+                vars.insert(var.clone());
+                if let Some(l) = lower {
+                    l.collect_variables(vars);
+                }
+                if let Some(u) = upper {
+                    u.collect_variables(vars);
+                }
+            }
+        }
+    }
 }
 
 impl fmt::Display for Expr {
