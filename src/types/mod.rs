@@ -47,6 +47,7 @@ pub enum BinaryOp {
     Divide,
     Power,
     Modulo,
+    Equals,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -195,6 +196,7 @@ impl fmt::Display for Expr {
                     BinaryOp::Divide => "/",
                     BinaryOp::Power => "^",
                     BinaryOp::Modulo => "%",
+                    BinaryOp::Equals => "=",
                 };
                 write!(f, "({} {} {})", left, op_str, right)
             }

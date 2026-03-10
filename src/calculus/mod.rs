@@ -586,14 +586,7 @@ impl Calculus {
                     (BinaryOp::Power, e, other) if other.is_one() => e.clone(),
 
                     _ => Expr::Binary {
-                        op: match op {
-                            BinaryOp::Add => BinaryOp::Add,
-                            BinaryOp::Subtract => BinaryOp::Subtract,
-                            BinaryOp::Multiply => BinaryOp::Multiply,
-                            BinaryOp::Divide => BinaryOp::Divide,
-                            BinaryOp::Power => BinaryOp::Power,
-                            BinaryOp::Modulo => BinaryOp::Modulo,
-                        },
+                        op: *op,
                         left: Box::new(left),
                         right: Box::new(right),
                     },

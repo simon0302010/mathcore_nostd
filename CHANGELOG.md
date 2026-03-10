@@ -36,7 +36,7 @@
   - Determinant, trace, eigenvalues
   - LU/QR/SVD decomposition
   - Linear system solver
-- Arbitrary precision (BigInt/Rational)
+- Arbitrary precision (BigInt/BigRational)
   - Exact rational math
   - Compute pi and e to arbitrary digits
 - Optimization stuff:

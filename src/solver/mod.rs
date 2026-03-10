@@ -20,6 +20,8 @@ impl Solver {
         let degree = equation.degree(var);
 
         match degree {
+            // degree 0 but variable present means non-polynomial (e.g. 1/x) — use numerics
+            0 if equation.contains_var(var) => Self::solve_numerical(&equation, var),
             0 => Self::solve_constant(&equation),
             1 => Self::solve_linear(&equation, var),
             2 => Self::solve_quadratic(&equation, var),
@@ -29,10 +31,22 @@ impl Solver {
 
     fn normalize_equation(equation: &Expr) -> Result<Expr, MathError> {
         match equation {
+            // Already in f(x) - g(x) form
             Expr::Binary {
                 op: BinaryOp::Subtract,
                 ..
             } => Ok(equation.clone()),
+            // lhs = rhs  →  lhs - rhs
+            Expr::Binary {
+                op: BinaryOp::Equals,
+                left,
+                right,
+            } => Ok(Expr::Binary {
+                op: BinaryOp::Subtract,
+                left: left.clone(),
+                right: right.clone(),
+            }),
+            // bare expression treated as f(x) = 0
             _ => Ok(Expr::Binary {
                 op: BinaryOp::Subtract,
                 left: Box::new(equation.clone()),

@@ -367,4 +367,255 @@ mod tests {
         let simplified = MathCore::simplify("1 * x").unwrap();
         println!("1 * x = {}", simplified);
     }
+
+    #[test]
+    fn test_equation_form_solve() {
+        // 3 = 6/x  →  x = 2
+        let roots = MathCore::solve("3 = 6/x", "x").unwrap();
+        assert!(!roots.is_empty());
+        if let Expr::Number(n) = &roots[0] {
+            assert!((*n - 2.0).abs() < 1e-6, "expected x=2, got {}", n);
+        }
+
+        // x^2 - 4 = 0  (explicit zero rhs)
+        let roots = MathCore::solve("x^2 - 4 = 0", "x").unwrap();
+        assert_eq!(roots.len(), 2);
+
+        // x + 1 = 4  →  x = 3
+        let roots = MathCore::solve("x + 1 = 4", "x").unwrap();
+        assert_eq!(roots.len(), 1);
+        if let Expr::Number(n) = &roots[0] {
+            assert!((*n - 3.0).abs() < 1e-10, "expected x=3, got {}", n);
+        }
+    }
+
+    // ── Arithmetic operations ────────────────────────────────────────────────
+
+    #[test]
+    fn test_arithmetic_addition() {
+        let math = MathCore::new();
+        assert_eq!(math.calculate("1 + 2").unwrap(), 3.0);
+        assert_eq!(math.calculate("0.5 + 0.5").unwrap(), 1.0);
+        assert_eq!(math.calculate("-3 + 5").unwrap(), 2.0);
+    }
+
+    #[test]
+    fn test_arithmetic_subtraction() {
+        let math = MathCore::new();
+        assert_eq!(math.calculate("10 - 3").unwrap(), 7.0);
+        assert_eq!(math.calculate("0 - 5").unwrap(), -5.0);
+        assert_eq!(math.calculate("2.5 - 1.5").unwrap(), 1.0);
+    }
+
+    #[test]
+    fn test_arithmetic_multiplication() {
+        let math = MathCore::new();
+        assert_eq!(math.calculate("3 * 4").unwrap(), 12.0);
+        assert_eq!(math.calculate("-2 * 6").unwrap(), -12.0);
+        assert_eq!(math.calculate("0 * 999").unwrap(), 0.0);
+    }
+
+    #[test]
+    fn test_arithmetic_division() {
+        let math = MathCore::new();
+        assert_eq!(math.calculate("10 / 2").unwrap(), 5.0);
+        assert_eq!(math.calculate("1 / 4").unwrap(), 0.25);
+        assert!(math.calculate("1 / 0").is_err());
+    }
+
+    #[test]
+    fn test_arithmetic_power() {
+        let math = MathCore::new();
+        assert_eq!(math.calculate("2^10").unwrap(), 1024.0);
+        assert_eq!(math.calculate("4^0.5").unwrap(), 2.0);
+        assert_eq!(math.calculate("27^(1/3)").unwrap(), 3.0);
+        assert_eq!(math.calculate("5^0").unwrap(), 1.0);
+        assert_eq!(math.calculate("1^999").unwrap(), 1.0);
+    }
+
+    #[test]
+    fn test_arithmetic_modulo() {
+        let math = MathCore::new();
+        assert_eq!(math.calculate("10 % 3").unwrap(), 1.0);
+        assert_eq!(math.calculate("7 % 7").unwrap(), 0.0);
+        assert_eq!(math.calculate("9 % 4").unwrap(), 1.0);
+    }
+
+    #[test]
+    fn test_arithmetic_factorial() {
+        let math = MathCore::new();
+        assert_eq!(math.calculate("0!").unwrap(), 1.0);
+        assert_eq!(math.calculate("1!").unwrap(), 1.0);
+        assert_eq!(math.calculate("5!").unwrap(), 120.0);
+        assert_eq!(math.calculate("10!").unwrap(), 3628800.0);
+    }
+
+    #[test]
+    fn test_arithmetic_absolute_value_pipe() {
+        let math = MathCore::new();
+        assert_eq!(math.calculate("|3|").unwrap(), 3.0);
+        assert_eq!(math.calculate("|-5|").unwrap(), 5.0);
+        assert_eq!(math.calculate("|0|").unwrap(), 0.0);
+        assert!((math.calculate("|-3.7|").unwrap() - 3.7).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_operator_precedence() {
+        let math = MathCore::new();
+        // multiplication before addition
+        assert_eq!(math.calculate("2 + 3 * 4").unwrap(), 14.0);
+        // parentheses override precedence
+        assert_eq!(math.calculate("(2 + 3) * 4").unwrap(), 20.0);
+        // power before multiplication
+        assert_eq!(math.calculate("2 * 3^2").unwrap(), 18.0);
+    }
+
+    // ── Trigonometric functions ──────────────────────────────────────────────
+
+    #[test]
+    fn test_trig_sin() {
+        let math = MathCore::new();
+        assert!((math.calculate("sin(0)").unwrap()).abs() < 1e-10);
+        assert!((math.calculate("sin(pi/2)").unwrap() - 1.0).abs() < 1e-10);
+        assert!((math.calculate("sin(pi)").unwrap()).abs() < 1e-10);
+        assert!((math.calculate("sin(3*pi/2)").unwrap() + 1.0).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_trig_cos() {
+        let math = MathCore::new();
+        assert!((math.calculate("cos(0)").unwrap() - 1.0).abs() < 1e-10);
+        assert!((math.calculate("cos(pi/2)").unwrap()).abs() < 1e-10);
+        assert!((math.calculate("cos(pi)").unwrap() + 1.0).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_trig_tan() {
+        let math = MathCore::new();
+        assert!((math.calculate("tan(0)").unwrap()).abs() < 1e-10);
+        assert!((math.calculate("tan(pi/4)").unwrap() - 1.0).abs() < 1e-10);
+        assert!((math.calculate("tan(-pi/4)").unwrap() + 1.0).abs() < 1e-10);
+    }
+
+    // sec(x) = 1/cos(x) — no built-in function, expressed as 1/cos(x)
+    #[test]
+    fn test_trig_sec_via_cos() {
+        let math = MathCore::new();
+        // sec(0) = 1/cos(0) = 1
+        assert!((math.calculate("1/cos(0)").unwrap() - 1.0).abs() < 1e-10);
+        // sec(pi/3) = 1/cos(pi/3) = 2
+        assert!((math.calculate("1/cos(pi/3)").unwrap() - 2.0).abs() < 1e-10);
+        // sec is also the derivative of tan — d/dx tan(x) = sec²(x)
+        // Verify numerically: (tan(x+h) - tan(x-h))/(2h) ≈ 1/cos²(x) at x=pi/4
+        let deriv_num = (math.calculate("tan(pi/4 + 0.0001)").unwrap()
+            - math.calculate("tan(pi/4 - 0.0001)").unwrap())
+            / 0.0002;
+        let sec_sq = 1.0 / math.calculate("cos(pi/4)").unwrap().powi(2);
+        assert!((deriv_num - sec_sq).abs() < 1e-6);
+    }
+
+    // ── Exponential & logarithmic functions ─────────────────────────────────
+
+    #[test]
+    fn test_exp() {
+        let math = MathCore::new();
+        assert!((math.calculate("exp(0)").unwrap() - 1.0).abs() < 1e-10);
+        assert!((math.calculate("exp(1)").unwrap() - core::f64::consts::E).abs() < 1e-10);
+        assert!((math.calculate("exp(2)").unwrap() - core::f64::consts::E.powi(2)).abs() < 1e-10);
+        // exp and ln are inverses
+        assert!((math.calculate("exp(ln(5))").unwrap() - 5.0).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_ln() {
+        let math = MathCore::new();
+        assert!((math.calculate("ln(1)").unwrap()).abs() < 1e-10);
+        assert!((math.calculate("ln(e)").unwrap() - 1.0).abs() < 1e-10);
+        assert!((math.calculate("ln(e^2)").unwrap() - 2.0).abs() < 1e-10);
+        // ln of non-positive should not produce a finite real result
+        // (returns symbolic or errors — either is acceptable)
+        assert!(math.calculate("ln(0)").is_err() || !math.calculate("ln(0)").unwrap().is_finite());
+    }
+
+    #[test]
+    fn test_log_custom_base() {
+        let math = MathCore::new();
+        assert!((math.calculate("log(100, 10)").unwrap() - 2.0).abs() < 1e-10);
+        assert!((math.calculate("log(8, 2)").unwrap() - 3.0).abs() < 1e-10);
+        assert!((math.calculate("log(1, 10)").unwrap()).abs() < 1e-10);
+        assert!((math.calculate("log(e, e)").unwrap() - 1.0).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_sqrt() {
+        let math = MathCore::new();
+        assert!((math.calculate("sqrt(4)").unwrap() - 2.0).abs() < 1e-10);
+        assert!((math.calculate("sqrt(9)").unwrap() - 3.0).abs() < 1e-10);
+        assert!((math.calculate("sqrt(2)").unwrap() - 2f64.sqrt()).abs() < 1e-10);
+        assert!((math.calculate("sqrt(0)").unwrap()).abs() < 1e-10);
+        // sqrt(x)^2 = x
+        assert!((math.calculate("sqrt(7)^2").unwrap() - 7.0).abs() < 1e-10);
+    }
+
+    // ── Utility functions ────────────────────────────────────────────────────
+
+    #[test]
+    fn test_min() {
+        let math = MathCore::new();
+        assert_eq!(math.calculate("min(3, 1, 2)").unwrap(), 1.0);
+        assert_eq!(math.calculate("min(5, 5)").unwrap(), 5.0);
+        assert_eq!(math.calculate("min(-1, -2, -3)").unwrap(), -3.0);
+        assert_eq!(math.calculate("min(0, 1)").unwrap(), 0.0);
+    }
+
+    #[test]
+    fn test_max() {
+        let math = MathCore::new();
+        assert_eq!(math.calculate("max(3, 1, 2)").unwrap(), 3.0);
+        assert_eq!(math.calculate("max(5, 5)").unwrap(), 5.0);
+        assert_eq!(math.calculate("max(-1, -2, -3)").unwrap(), -1.0);
+        assert_eq!(math.calculate("max(0, 1)").unwrap(), 1.0);
+    }
+
+    #[test]
+    fn test_abs_function() {
+        let math = MathCore::new();
+        assert_eq!(math.calculate("abs(3)").unwrap(), 3.0);
+        assert_eq!(math.calculate("abs(-5)").unwrap(), 5.0);
+        assert_eq!(math.calculate("abs(0)").unwrap(), 0.0);
+        // abs and pipe-syntax should agree
+        assert_eq!(
+            math.calculate("abs(-7)").unwrap(),
+            math.calculate("|-7|").unwrap()
+        );
+    }
+
+    // ── Mathematical constants ───────────────────────────────────────────────
+
+    #[test]
+    fn test_constant_pi() {
+        let math = MathCore::new();
+        let pi = math.calculate("pi").unwrap();
+        assert!((pi - core::f64::consts::PI).abs() < 1e-15);
+        // pi appears correctly inside expressions
+        assert!((math.calculate("2*pi").unwrap() - core::f64::consts::TAU).abs() < 1e-15);
+    }
+
+    #[test]
+    fn test_constant_e() {
+        let math = MathCore::new();
+        let e = math.calculate("e").unwrap();
+        assert!((e - core::f64::consts::E).abs() < 1e-15);
+        // e^1 = e
+        assert!((math.calculate("e^1").unwrap() - core::f64::consts::E).abs() < 1e-15);
+    }
+
+    #[test]
+    fn test_constant_tau() {
+        let math = MathCore::new();
+        let tau = math.calculate("tau").unwrap();
+        assert!((tau - core::f64::consts::TAU).abs() < 1e-15);
+        // tau = 2*pi
+        assert!((math.calculate("tau - 2*pi").unwrap()).abs() < 1e-14);
+    }
 }

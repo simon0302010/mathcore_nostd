@@ -35,7 +35,27 @@ impl Parser {
 }
 
 fn expression(input: &str) -> IResult<&str, Expr> {
-    additive(input)
+    equation(input)
+}
+
+fn equation(input: &str) -> IResult<&str, Expr> {
+    let (input, lhs) = additive(input)?;
+
+    if let Ok((input, _)) =
+        delimited::<_, _, _, _, nom::error::Error<&str>, _, _, _>(multispace0, char('='), multispace0)(input)
+    {
+        let (input, rhs) = additive(input)?;
+        return Ok((
+            input,
+            Expr::Binary {
+                op: BinaryOp::Equals,
+                left: Box::new(lhs),
+                right: Box::new(rhs),
+            },
+        ));
+    }
+
+    Ok((input, lhs))
 }
 
 fn additive(input: &str) -> IResult<&str, Expr> {

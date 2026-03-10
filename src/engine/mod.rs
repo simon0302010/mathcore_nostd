@@ -95,6 +95,11 @@ impl Engine {
                     }
                     BinaryOp::Power => l.powf(*r),
                     BinaryOp::Modulo => l % r,
+                    BinaryOp::Equals => {
+                        return Err(MathError::InvalidOperation(
+                            "Cannot evaluate an equation directly; use Solver::solve".to_string(),
+                        ));
+                    }
                 };
 
                 if result.is_finite() {
@@ -119,6 +124,11 @@ impl Engine {
                     BinaryOp::Modulo => {
                         return Err(MathError::InvalidOperation(
                             "Modulo not defined for complex numbers".to_string(),
+                        ));
+                    }
+                    BinaryOp::Equals => {
+                        return Err(MathError::InvalidOperation(
+                            "Cannot evaluate an equation directly; use Solver::solve".to_string(),
                         ));
                     }
                 };
