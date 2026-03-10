@@ -244,6 +244,7 @@ impl MathCore {
         for y in 0..=height {
             plot[y][0] = '|';
         }
+        #[allow(clippy::needless_range_loop)]
         for x in 0..=width {
             plot[height][x] = '-';
         }

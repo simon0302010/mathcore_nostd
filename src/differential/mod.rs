@@ -600,6 +600,7 @@ impl PDESolver {
         let mut u = vec![vec![0.0; nx]; nt];
 
         // Initial condition
+        #[allow(clippy::needless_range_loop)]
         for i in 0..nx {
             let x = x_min + i as f64 * dx;
             u[0][i] = initial_condition(x);
@@ -646,6 +647,7 @@ impl PDESolver {
         let courant_sq = courant * courant;
 
         // Initial conditions
+        #[allow(clippy::needless_range_loop)]
         for i in 0..nx {
             let x = x_min + i as f64 * dx;
             u[0][i] = initial_position(x);
