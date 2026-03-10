@@ -1,5 +1,7 @@
+extern crate alloc;
+
 use mathcore::MathCore;
-use std::collections::HashMap;
+use alloc::collections::BTreeMap;
 
 fn main() {
     println!("MathCore Demonstration\n");
@@ -22,7 +24,7 @@ fn main() {
     println!("Complex number parsed: {}", complex_result);
 
     println!("\n=== Variables ===");
-    let mut vars = HashMap::new();
+    let mut vars = BTreeMap::new();
     vars.insert("x".to_string(), 3.0);
     vars.insert("y".to_string(), 4.0);
     let pythagoras = math.evaluate_with_vars("sqrt(x^2 + y^2)", &vars).unwrap();
@@ -90,7 +92,7 @@ fn main() {
         taylor.push_str(&format!(" + x^{}/{}", n, factorial(n)));
         let expr = taylor.replace("/", " / ");
         let value = math
-            .evaluate_with_vars(&expr, &HashMap::from([("x".to_string(), 1.0)]))
+            .evaluate_with_vars(&expr, &BTreeMap::from([("x".to_string(), 1.0)]))
             .unwrap();
         println!("n={}: e ≈ {:.6}", n, value);
     }

@@ -1,10 +1,9 @@
 //! Fast Fourier Transform and other integral transforms
 
+use alloc::vec::Vec;
+use alloc::vec;
 use num_complex::Complex64;
-use std::f64::consts::PI;
-
-#[cfg(feature = "fft")]
-use rustfft::FftPlanner;
+use core::f64::consts::PI;
 
 /// Fast Fourier Transform implementation
 pub struct FFT;
@@ -17,26 +16,13 @@ impl FFT {
             return input.to_vec();
         }
 
-        // Use rustfft if available
-        #[cfg(feature = "fft")]
-        {
-            let mut planner = FftPlanner::<f64>::new();
-            let fft = planner.plan_fft_forward(n);
-            let mut buffer = input.to_vec();
-            fft.process(&mut buffer);
-            buffer
-        }
-
-        // Fallback to manual implementation
-        #[cfg(not(feature = "fft"))]
-        {
-            Self::cooley_tukey_fft(input)
-        }
+        Self::cooley_tukey_fft(input)
     }
 
     /// Manual Cooley-Tukey FFT implementation
-    #[cfg(not(feature = "fft"))]
     fn cooley_tukey_fft(input: &[Complex64]) -> Vec<Complex64> {
+        use alloc::vec::Vec;
+
         let n = input.len();
 
         if n <= 1 {
@@ -172,6 +158,10 @@ impl FFT {
 
 /// Sparse matrix representation and operations
 pub mod sparse {
+    use alloc::string::ToString;
+    use alloc::vec::Vec;
+    use alloc::vec;
+
     use crate::types::MathError;
 
     /// Compressed Sparse Row matrix format
@@ -265,72 +255,6 @@ pub mod sparse {
             let zeros = total - self.nnz();
             100.0 * zeros as f64 / total as f64
         }
-    }
-}
-
-/// Parallel computation utilities
-#[cfg(feature = "parallel")]
-pub mod parallel {
-    use crate::engine::Engine;
-    use crate::types::Expr;
-    use rayon::prelude::*;
-    use std::collections::HashMap;
-
-    /// Parallel evaluation of multiple expressions
-    pub fn parallel_evaluate(
-        expressions: &[Expr],
-        vars: &HashMap<String, f64>,
-    ) -> Vec<Result<f64, crate::types::MathError>> {
-        expressions
-            .par_iter()
-            .map(|expr| {
-                let engine = Engine::new();
-                match engine.evaluate_with_vars(expr, vars) {
-                    Ok(Expr::Number(n)) => Ok(n),
-                    Ok(_) => Err(crate::types::MathError::InvalidOperation(
-                        "Non-numeric result".to_string(),
-                    )),
-                    Err(e) => Err(e),
-                }
-            })
-            .collect()
-    }
-
-    /// Parallel matrix multiplication
-    pub fn parallel_matrix_multiply(a: &[Vec<f64>], b: &[Vec<f64>]) -> Vec<Vec<f64>> {
-        let rows_a = a.len();
-        let cols_b = if b.is_empty() { 0 } else { b[0].len() };
-        let cols_a = if a.is_empty() { 0 } else { a[0].len() };
-
-        (0..rows_a)
-            .into_par_iter()
-            .map(|i| {
-                (0..cols_b)
-                    .map(|j| (0..cols_a).map(|k| a[i][k] * b[k][j]).sum())
-                    .collect()
-            })
-            .collect()
-    }
-
-    /// Parallel numerical integration
-    pub fn parallel_integrate<F>(f: F, a: f64, b: f64, n: usize) -> f64
-    where
-        F: Fn(f64) -> f64 + Sync,
-    {
-        let h = (b - a) / n as f64;
-
-        let sum: f64 = (0..n)
-            .into_par_iter()
-            .map(|i| {
-                let x = a + i as f64 * h;
-                let x_next = x + h;
-                let mid = (x + x_next) / 2.0;
-
-                h * (f(x) + 4.0 * f(mid) + f(x_next)) / 6.0
-            })
-            .sum();
-
-        sum
     }
 }
 

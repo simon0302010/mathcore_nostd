@@ -2,7 +2,10 @@ pub mod limits;
 
 use crate::engine::Engine;
 use crate::types::{BinaryOp, Expr, MathError, UnaryOp};
-use std::collections::HashMap;
+use alloc::boxed::Box;
+use alloc::collections::BTreeMap;
+use alloc::string::ToString;
+use alloc::{format, vec};
 
 // calculus stuff
 pub struct Calculus;
@@ -518,7 +521,7 @@ impl Calculus {
             let x2 = x1 + h;
             let mid = (x1 + x2) / 2.0;
 
-            let mut vars = HashMap::new();
+            let mut vars = BTreeMap::new();
             vars.insert(var.to_string(), x1);
             let y1 = match engine.evaluate_with_vars(expr, &vars)? {
                 Expr::Number(n) => n,

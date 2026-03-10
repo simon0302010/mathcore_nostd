@@ -1,8 +1,13 @@
 use crate::calculus::Calculus;
 use crate::engine::Engine;
 use crate::types::{BinaryOp, Expr, MathError};
+use alloc::boxed::Box;
+use alloc::string::{String, ToString};
+use alloc::vec::Vec;
+use alloc::vec;
 use num_complex::Complex64;
-use std::collections::HashMap;
+use alloc::collections::BTreeMap;
+use num_traits::Float;
 
 // solver for equations
 pub struct Solver;
@@ -152,7 +157,7 @@ impl Solver {
         let tolerance = 1e-10;
 
         for _ in 0..max_iterations {
-            let mut vars = HashMap::new();
+            let mut vars = BTreeMap::new();
             vars.insert(var.to_string(), x);
 
             let f_val = match engine.evaluate_with_vars(equation, &vars)? {
@@ -349,11 +354,13 @@ impl Solver {
 }
 
 fn rand_float() -> f64 {
-    // Simple pseudo-random number generator
-    use std::time::{SystemTime, UNIX_EPOCH};
-    let nanos = SystemTime::now()
-        .duration_since(UNIX_EPOCH)
-        .unwrap()
-        .subsec_nanos() as f64;
-    nanos / 1_000_000_000.0
+    use core::sync::atomic::{AtomicU32, Ordering};
+    static SEED: AtomicU32 = AtomicU32::new(12345);
+
+    let s = SEED.fetch_update(Ordering::Relaxed, Ordering::Relaxed, |s| {
+        Some(s.wrapping_mul(1664525).wrapping_add(1013904223))
+    }).unwrap_or(12345);
+
+    // Map the 32-bit integer to the [0.0, 1.0) float range
+    (s as f64) / (u32::MAX as f64)
 }

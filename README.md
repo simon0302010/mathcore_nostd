@@ -22,7 +22,7 @@ A symbolic math library for Rust. Think of it as a computer algebra system (CAS)
 ### Fancier features
 - Limits (including one-sided and at infinity)
 - Matrix operations and linear algebra
-- Arbitrary precision arithmetic (BigInt/BigRational)
+- Arbitrary precision arithmetic (BigInt/Rational)
 - Optimization (gradients, Hessian, autodiff)
 - Taylor series expansion
 - Numerical methods (Newton's method, gradient descent)
@@ -120,7 +120,7 @@ println!("π ≈ {}", pi);
 
 ```rust
 use mathcore::ml::{Optimization, SymbolicIntegration};
-use std::collections::HashMap;
+use alloc::collections::BTreeMap
 
 // Compute gradient
 let loss = MathCore::parse("x^2 + y^2").unwrap();
@@ -134,7 +134,7 @@ let taylor = Optimization::taylor_series(&func, "x", 0.0, 5).unwrap();
 println!("Taylor series: {}", taylor);
 
 // Gradient descent optimization
-let mut params = HashMap::new();
+let mut params = BTreeMap::new();
 params.insert("x".to_string(), 10.0);
 params.insert("y".to_string(), 10.0);
 let optimized = Optimization::gradient_descent(
@@ -147,7 +147,7 @@ println!("Optimized parameters: {:?}", optimized);
 
 ```rust
 let math = MathCore::new();
-let mut vars = HashMap::new();
+let mut vars = BTreeMap::new();
 vars.insert("a".to_string(), 3.0);
 vars.insert("b".to_string(), 4.0);
 

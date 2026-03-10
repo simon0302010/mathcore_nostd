@@ -1,6 +1,11 @@
 use crate::engine::Engine;
 use crate::types::{Expr, MathError};
-use std::collections::HashMap;
+use alloc::boxed::Box;
+use alloc::collections::BTreeMap;
+use alloc::string::ToString;
+use alloc::vec::Vec;
+use alloc::vec;
+use num_traits::Float;
 
 pub struct Limits;
 
@@ -45,7 +50,7 @@ impl Limits {
         epsilon: f64,
     ) -> Result<Expr, MathError> {
         let engine = Engine::new();
-        let mut vars = HashMap::new();
+        let mut vars = BTreeMap::new();
 
         let test_points = if epsilon == 0.0 {
             vec![point]
@@ -102,7 +107,7 @@ impl Limits {
 
     pub fn is_continuous_at(expr: &Expr, var: &str, point: f64) -> Result<bool, MathError> {
         let engine = Engine::new();
-        let mut vars = HashMap::new();
+        let mut vars = BTreeMap::new();
         vars.insert(var.to_string(), point);
 
         let value_at_point = match engine.evaluate_with_vars(expr, &vars)? {
@@ -125,7 +130,7 @@ impl Limits {
         use crate::calculus::Calculus;
 
         let engine = Engine::new();
-        let mut vars = HashMap::new();
+        let mut vars = BTreeMap::new();
         vars.insert(var.to_string(), point);
 
         let num_at_point = engine.evaluate_with_vars(numerator, &vars)?;

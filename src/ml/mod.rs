@@ -1,8 +1,12 @@
 use crate::calculus::Calculus;
 use crate::engine::Engine;
 use crate::types::{BinaryOp, Expr, MathError};
+use alloc::boxed::Box;
+use alloc::{format, vec};
+use alloc::string::{String, ToString};
+use alloc::vec::Vec;
 use nalgebra::DMatrix;
-use std::collections::HashMap;
+use alloc::collections::BTreeMap;
 
 pub struct Optimization;
 
@@ -34,10 +38,10 @@ impl Optimization {
 
     pub fn gradient_descent(
         loss_fn: &Expr,
-        initial_params: HashMap<String, f64>,
+        initial_params: BTreeMap<String, f64>,
         learning_rate: f64,
         iterations: usize,
-    ) -> Result<HashMap<String, f64>, MathError> {
+    ) -> Result<BTreeMap<String, f64>, MathError> {
         let engine = Engine::new();
         let mut params = initial_params.clone();
         let var_names: Vec<String> = params.keys().cloned().collect();
@@ -45,7 +49,7 @@ impl Optimization {
         let gradients = Self::gradient(loss_fn, &var_names)?;
 
         for _ in 0..iterations {
-            let mut updates = HashMap::new();
+            let mut updates = BTreeMap::new();
 
             for (var_name, grad_expr) in var_names.iter().zip(gradients.iter()) {
                 let grad_value = match engine.evaluate_with_vars(grad_expr, &params)? {
@@ -73,7 +77,7 @@ impl Optimization {
         value: f64,
     ) -> Result<(f64, f64), MathError> {
         let engine = Engine::new();
-        let mut vars = HashMap::new();
+        let mut vars = BTreeMap::new();
         vars.insert(var.to_string(), value);
 
         let function_value = match engine.evaluate_with_vars(expr, &vars)? {
@@ -101,7 +105,7 @@ impl Optimization {
     pub fn jacobian(
         functions: &[Expr],
         vars: &[String],
-        point: &HashMap<String, f64>,
+        point: &BTreeMap<String, f64>,
     ) -> Result<DMatrix<f64>, MathError> {
         let engine = Engine::new();
         let mut jacobian = DMatrix::zeros(functions.len(), vars.len());
@@ -141,7 +145,7 @@ impl Optimization {
                 factorial *= n as f64;
             }
 
-            let mut eval_point = HashMap::new();
+            let mut eval_point = BTreeMap::new();
             eval_point.insert(var.to_string(), center);
 
             let coeff_value = match engine.evaluate_with_vars(&current_deriv, &eval_point)? {
@@ -200,7 +204,7 @@ impl Optimization {
         let mut x = initial;
 
         for _ in 0..max_iterations {
-            let mut vars = HashMap::new();
+            let mut vars = BTreeMap::new();
             vars.insert(var.to_string(), x);
 
             let f_prime = match engine.evaluate_with_vars(&first_deriv, &vars)? {
@@ -375,7 +379,7 @@ impl SymbolicIntegration {
             right: Box::new(reduced_den),
         };
 
-        let mut vars = HashMap::new();
+        let mut vars = BTreeMap::new();
         vars.insert(var.to_string(), pole);
 
         engine.evaluate_with_vars(&ratio, &vars)
@@ -384,6 +388,9 @@ impl SymbolicIntegration {
 
 #[cfg(test)]
 mod tests {
+    use alloc::vec;
+    use std::println;
+
     use super::*;
     use crate::parser::Parser;
 

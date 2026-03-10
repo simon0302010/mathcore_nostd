@@ -1,6 +1,8 @@
+extern crate alloc;
+
 use mathcore::ml::Optimization;
 use mathcore::parser::Parser;
-use std::collections::HashMap;
+use alloc::collections::BTreeMap;
 
 fn main() {
     println!("Optimization Examples\n");
@@ -18,7 +20,7 @@ fn gradient_descent_example() {
     let loss_fn = Parser::parse("(x-3)^2 + (y-2)^2").unwrap();
 
     // Starting point
-    let mut initial_params = HashMap::new();
+    let mut initial_params = BTreeMap::new();
     initial_params.insert("x".to_string(), 0.0);
     initial_params.insert("y".to_string(), 0.0);
 
@@ -122,7 +124,7 @@ fn taylor_series_example() {
     let engine = Engine::new();
 
     for x in [0.1, 0.5, 1.0, 1.5] {
-        let mut vars = HashMap::new();
+        let mut vars = BTreeMap::new();
         vars.insert("x".to_string(), x);
 
         let taylor_val = engine.evaluate_with_vars(&sin_taylor, &vars).unwrap();

@@ -1,7 +1,5 @@
 use num_complex::Complex64;
-use std::collections::HashMap;
-use std::fmt;
-use std::rc::Rc;
+use alloc::{boxed::Box, collections::BTreeMap, fmt, format, rc::Rc, string::{String, ToString}, vec::Vec};
 
 #[derive(Debug, Clone)]
 pub enum Expr {
@@ -56,8 +54,8 @@ type CustomFunction = Rc<dyn Fn(&[Expr]) -> Result<Expr, MathError>>;
 
 #[derive(Clone)]
 pub struct Context {
-    variables: HashMap<String, Expr>,
-    functions: HashMap<String, CustomFunction>,
+    variables: BTreeMap<String, Expr>,
+    functions: BTreeMap<String, CustomFunction>,
 }
 
 impl fmt::Debug for Context {
@@ -72,7 +70,7 @@ impl fmt::Debug for Context {
     }
 }
 
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug, thiserror_no_std::Error)]
 pub enum MathError {
     #[error("Parse error: {0}")]
     ParseError(String),
@@ -233,16 +231,16 @@ impl Default for Context {
 impl Context {
     pub fn new() -> Self {
         Context {
-            variables: HashMap::new(),
-            functions: HashMap::new(),
+            variables: BTreeMap::new(),
+            functions: BTreeMap::new(),
         }
     }
 
     pub fn with_defaults() -> Self {
         let mut ctx = Self::new();
-        ctx.set_var("pi", Expr::Number(std::f64::consts::PI));
-        ctx.set_var("e", Expr::Number(std::f64::consts::E));
-        ctx.set_var("tau", Expr::Number(std::f64::consts::TAU));
+        ctx.set_var("pi", Expr::Number(core::f64::consts::PI));
+        ctx.set_var("e", Expr::Number(core::f64::consts::E));
+        ctx.set_var("tau", Expr::Number(core::f64::consts::TAU));
         ctx
     }
 

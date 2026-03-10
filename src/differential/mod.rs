@@ -1,6 +1,10 @@
 use crate::engine::Engine;
 use crate::types::{BinaryOp, Expr, MathError};
-use std::collections::HashMap;
+use alloc::boxed::Box;
+use alloc::collections::BTreeMap;
+use alloc::string::{String, ToString};
+use alloc::vec::Vec;
+use alloc::{format, vec};
 
 #[derive(Debug, Clone)]
 pub struct ODESolution {
@@ -47,7 +51,7 @@ impl DifferentialEquations {
         let mut y = y0;
 
         for _ in 0..steps {
-            let mut vars = HashMap::new();
+            let mut vars = BTreeMap::new();
             vars.insert(t_var.to_string(), t);
             vars.insert(y_var.to_string(), y);
 
@@ -143,7 +147,7 @@ impl DifferentialEquations {
             let mut k4 = vec![0.0; n];
 
             // k1
-            let mut vars = HashMap::new();
+            let mut vars = BTreeMap::new();
             vars.insert(t_var.to_string(), t);
             for (i, var) in y_vars.iter().enumerate() {
                 vars.insert(var.clone(), y[i]);
@@ -253,7 +257,7 @@ impl DifferentialEquations {
         let mut v = dy0;
 
         for _ in 0..steps {
-            let mut vars = HashMap::new();
+            let mut vars = BTreeMap::new();
             vars.insert(x_var.to_string(), x);
 
             let p_val = match engine.evaluate_with_vars(p, &vars)? {
@@ -318,7 +322,7 @@ impl DifferentialEquations {
         let mut y = y0;
 
         for _ in 0..steps {
-            let mut vars = HashMap::new();
+            let mut vars = BTreeMap::new();
             vars.insert(t_var.to_string(), t);
             vars.insert(y_var.to_string(), y);
 
@@ -373,7 +377,7 @@ impl DifferentialEquations {
 
             // Newton iteration for implicit equation
             for _ in 0..10 {
-                let mut vars = HashMap::new();
+                let mut vars = BTreeMap::new();
                 vars.insert(t_var.to_string(), t);
                 vars.insert(y_var.to_string(), y_new);
 

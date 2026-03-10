@@ -1,6 +1,9 @@
 use crate::types::{Expr, MathError};
+use alloc::string::ToString;
+use alloc::{boxed::Box, vec::Vec};
+use alloc::{fmt, format, vec};
 use nalgebra::{DMatrix, DVector};
-use std::fmt;
+use num_traits::Float;
 
 // Type alias for SVD result
 type SVDResult = Result<(DMatrix<f64>, DVector<f64>, DMatrix<f64>), MathError>;
@@ -353,6 +356,7 @@ impl fmt::Display for SymbolicMatrix {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::println;
 
     #[test]
     fn test_matrix_multiplication() {

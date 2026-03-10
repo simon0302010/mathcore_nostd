@@ -1,3 +1,5 @@
+#![no_std]
+
 //! MathCore - symbolic math library for Rust
 //!
 //! basically a CAS (computer algebra system) that can do symbolic math,
@@ -19,6 +21,10 @@
 //! let roots = MathCore::solve("x^2 - 4", "x").unwrap();
 //! ```
 
+extern crate alloc;
+#[cfg(test)]
+extern crate std;
+
 pub mod calculus;
 pub mod differential;
 pub mod engine;
@@ -30,8 +36,11 @@ pub mod solver;
 pub mod transforms;
 pub mod types;
 
-use std::collections::HashMap;
+use alloc::{boxed::Box, collections::BTreeMap, format, string::String, vec::Vec, vec};
+use alloc::string::ToString;
 pub use types::{Expr, MathError};
+
+use num_traits::Float;
 
 pub struct MathCore {
     engine: engine::Engine,
@@ -68,7 +77,7 @@ impl MathCore {
     pub fn evaluate_with_vars(
         &self,
         expression: &str,
-        vars: &HashMap<String, f64>,
+        vars: &BTreeMap<String, f64>,
     ) -> Result<f64, MathError> {
         let expr = Self::parse(expression)?;
         let result = self.engine.evaluate_with_vars(&expr, vars)?;
@@ -207,7 +216,7 @@ impl MathCore {
 
         for i in 0..=width {
             let x = x_min + i as f64 * step;
-            let mut vars = HashMap::new();
+            let mut vars = BTreeMap::new();
             vars.insert(var.to_string(), x);
 
             if let Ok(Expr::Number(y)) = engine.evaluate_with_vars(&expr, &vars) {
@@ -274,6 +283,7 @@ impl Default for MathCore {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::println;
 
     #[test]
     fn test_basic_arithmetic() {
@@ -337,7 +347,7 @@ mod tests {
     #[test]
     fn test_variables() {
         let math = MathCore::new();
-        let mut vars = HashMap::new();
+        let mut vars = BTreeMap::new();
         vars.insert("a".to_string(), 3.0);
         vars.insert("b".to_string(), 4.0);
 

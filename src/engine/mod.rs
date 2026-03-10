@@ -1,6 +1,7 @@
 use crate::types::{BinaryOp, Context, Expr, MathError, UnaryOp};
 use num_complex::Complex64;
-use std::collections::HashMap;
+use alloc::{boxed::Box, collections::BTreeMap, string::{String, ToString}, vec::Vec};
+use num_traits::Float;
 
 // eval engine for expressions
 pub struct Engine {
@@ -32,7 +33,7 @@ impl Engine {
     pub fn evaluate_with_vars(
         &self,
         expr: &Expr,
-        vars: &HashMap<String, f64>,
+        vars: &BTreeMap<String, f64>,
     ) -> Result<Expr, MathError> {
         let mut temp_expr = expr.clone();
         for (name, value) in vars {

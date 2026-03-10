@@ -1,5 +1,7 @@
+extern crate alloc;
+
 use mathcore::{Expr, MathCore};
-use std::collections::HashMap;
+use alloc::collections::BTreeMap;
 
 #[test]
 fn test_complete_workflow() {
@@ -9,7 +11,7 @@ fn test_complete_workflow() {
     let _expr = MathCore::parse("x^2 + 2*x + 1").unwrap();
 
     // Evaluate with variables
-    let mut vars = HashMap::new();
+    let mut vars = BTreeMap::new();
     vars.insert("x".to_string(), 3.0);
     let result = math.evaluate_with_vars("x^2 + 2*x + 1", &vars).unwrap();
     assert_eq!(result, 16.0);
