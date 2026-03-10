@@ -1,5 +1,12 @@
+use alloc::{
+    boxed::Box,
+    collections::BTreeMap,
+    fmt, format,
+    rc::Rc,
+    string::{String, ToString},
+    vec::Vec,
+};
 use num_complex::Complex64;
-use alloc::{boxed::Box, collections::BTreeMap, fmt, format, rc::Rc, string::{String, ToString}, vec::Vec};
 
 #[derive(Debug, Clone)]
 pub enum Expr {

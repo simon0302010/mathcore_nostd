@@ -4,8 +4,8 @@ use crate::types::MathError;
 use alloc::{fmt, format, string::ToString, vec::Vec};
 use num_bigint::BigInt;
 use num_rational::BigRational;
-use num_traits::{FromPrimitive, One, Signed, ToPrimitive, Zero};
 use num_traits::Float;
+use num_traits::{FromPrimitive, One, Signed, ToPrimitive, Zero};
 
 #[derive(Debug, Clone)]
 pub enum PrecisionNumber {

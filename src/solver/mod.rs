@@ -2,11 +2,11 @@ use crate::calculus::Calculus;
 use crate::engine::Engine;
 use crate::types::{BinaryOp, Expr, MathError};
 use alloc::boxed::Box;
-use alloc::string::{String, ToString};
-use alloc::vec::Vec;
-use alloc::vec;
-use num_complex::Complex64;
 use alloc::collections::BTreeMap;
+use alloc::string::{String, ToString};
+use alloc::vec;
+use alloc::vec::Vec;
+use num_complex::Complex64;
 use num_traits::Float;
 
 // solver for equations
@@ -357,9 +357,11 @@ fn rand_float() -> f64 {
     use core::sync::atomic::{AtomicU32, Ordering};
     static SEED: AtomicU32 = AtomicU32::new(12345);
 
-    let s = SEED.fetch_update(Ordering::Relaxed, Ordering::Relaxed, |s| {
-        Some(s.wrapping_mul(1664525).wrapping_add(1013904223))
-    }).unwrap_or(12345);
+    let s = SEED
+        .fetch_update(Ordering::Relaxed, Ordering::Relaxed, |s| {
+            Some(s.wrapping_mul(1664525).wrapping_add(1013904223))
+        })
+        .unwrap_or(12345);
 
     // Map the 32-bit integer to the [0.0, 1.0) float range
     (s as f64) / (u32::MAX as f64)

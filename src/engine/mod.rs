@@ -1,6 +1,11 @@
 use crate::types::{BinaryOp, Context, Expr, MathError, UnaryOp};
+use alloc::{
+    boxed::Box,
+    collections::BTreeMap,
+    string::{String, ToString},
+    vec::Vec,
+};
 use num_complex::Complex64;
-use alloc::{boxed::Box, collections::BTreeMap, string::{String, ToString}, vec::Vec};
 use num_traits::Float;
 
 // eval engine for expressions

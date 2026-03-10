@@ -2,11 +2,11 @@ use crate::calculus::Calculus;
 use crate::engine::Engine;
 use crate::types::{BinaryOp, Expr, MathError};
 use alloc::boxed::Box;
-use alloc::{format, vec};
+use alloc::collections::BTreeMap;
 use alloc::string::{String, ToString};
 use alloc::vec::Vec;
+use alloc::{format, vec};
 use nalgebra::DMatrix;
-use alloc::collections::BTreeMap;
 
 pub struct Optimization;
 

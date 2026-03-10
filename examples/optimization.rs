@@ -1,8 +1,8 @@
 extern crate alloc;
 
+use alloc::collections::BTreeMap;
 use mathcore_nostd::ml::Optimization;
 use mathcore_nostd::parser::Parser;
-use alloc::collections::BTreeMap;
 
 fn main() {
     println!("Optimization Examples\n");

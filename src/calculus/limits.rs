@@ -3,8 +3,8 @@ use crate::types::{Expr, MathError};
 use alloc::boxed::Box;
 use alloc::collections::BTreeMap;
 use alloc::string::ToString;
-use alloc::vec::Vec;
 use alloc::vec;
+use alloc::vec::Vec;
 use num_traits::Float;
 
 pub struct Limits;

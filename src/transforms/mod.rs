@@ -1,9 +1,9 @@
 //! Fast Fourier Transform and other integral transforms
 
-use alloc::vec::Vec;
 use alloc::vec;
-use num_complex::Complex64;
+use alloc::vec::Vec;
 use core::f64::consts::PI;
+use num_complex::Complex64;
 
 /// Fast Fourier Transform implementation
 pub struct FFT;
@@ -159,8 +159,8 @@ impl FFT {
 /// Sparse matrix representation and operations
 pub mod sparse {
     use alloc::string::ToString;
-    use alloc::vec::Vec;
     use alloc::vec;
+    use alloc::vec::Vec;
 
     use crate::types::MathError;
 

@@ -178,7 +178,9 @@ fn precision_benchmark(c: &mut Criterion) {
     let a = PrecisionNumber::from_str_with_precision("123456789012345678901234567890").unwrap();
     let b_num = PrecisionNumber::from_str_with_precision("987654321098765432109876543210").unwrap();
 
-    group.bench_function("big_multiply", |bencher| bencher.iter(|| a.multiply(black_box(&b_num))));
+    group.bench_function("big_multiply", |bencher| {
+        bencher.iter(|| a.multiply(black_box(&b_num)))
+    });
 
     group.bench_function("compute_pi", |b| {
         b.iter(|| ArbitraryPrecision::compute_pi(black_box(50)))

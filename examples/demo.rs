@@ -1,7 +1,7 @@
 extern crate alloc;
 
-use mathcore_nostd::MathCore;
 use alloc::collections::BTreeMap;
+use mathcore_nostd::MathCore;
 
 fn main() {
     println!("MathCore Demonstration\n");

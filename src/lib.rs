@@ -36,8 +36,8 @@ pub mod solver;
 pub mod transforms;
 pub mod types;
 
-use alloc::{boxed::Box, collections::BTreeMap, format, string::String, vec::Vec, vec};
 use alloc::string::ToString;
+use alloc::{boxed::Box, collections::BTreeMap, format, string::String, vec, vec::Vec};
 pub use types::{Expr, MathError};
 
 use num_traits::Float;

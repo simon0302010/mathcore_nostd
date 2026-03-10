@@ -1,7 +1,7 @@
 extern crate alloc;
 
-use mathcore_nostd::{Expr, MathCore};
 use alloc::collections::BTreeMap;
+use mathcore_nostd::{Expr, MathCore};
 
 #[test]
 fn test_complete_workflow() {
