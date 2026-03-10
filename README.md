@@ -6,6 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A symbolic math library for Rust. Think of it as a computer algebra system (CAS) that can do symbolic differentiation, integration, equation solving, and more.
+This is a fork of the original mathcore library to work in no_std environments. This is not guaranteed to work in any environment and will probably not be actively maintained.
 
 ## What it does
 
@@ -22,7 +23,7 @@ A symbolic math library for Rust. Think of it as a computer algebra system (CAS)
 ### Fancier features
 - Limits (including one-sided and at infinity)
 - Matrix operations and linear algebra
-- Arbitrary precision arithmetic (BigInt/Rational)
+- Arbitrary precision arithmetic (BigInt/BigRational)
 - Optimization (gradients, Hessian, autodiff)
 - Taylor series expansion
 - Numerical methods (Newton's method, gradient descent)
@@ -31,19 +32,19 @@ A symbolic math library for Rust. Think of it as a computer algebra system (CAS)
 
 ## Installation
 
-**Option 1:** Run `cargo add mathcore` in your project's root directory.
+**Option 1:** Run `cargo add mathcore_nostd` in your project's root directory.
 
 **Option 2:** Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-mathcore = "0.3.1"
+mathcore_nostd = "0.3.1"
 ```
 
 ## Quick example
 
 ```rust
-use mathcore::MathCore;
+use mathcore_nostd::MathCore;
 
 fn main() {
     let math = MathCore::new();
@@ -67,7 +68,7 @@ fn main() {
 ### Limits
 
 ```rust
-use mathcore::calculus::limits::{Limits, LimitDirection};
+use mathcore_nostd::calculus::limits::{Limits, LimitDirection};
 
 let expr = MathCore::parse("sin(x)/x").unwrap();
 let limit = Limits::limit(&expr, "x", 0.0, LimitDirection::Both).unwrap();
@@ -81,7 +82,7 @@ println!("Function is continuous: {}", continuous);
 ### Matrix Operations
 
 ```rust
-use mathcore::matrix::{SymbolicMatrix, LinearAlgebra};
+use mathcore_nostd::matrix::{SymbolicMatrix, LinearAlgebra};
 use nalgebra::{DMatrix, DVector};
 
 // Symbolic matrices
@@ -103,7 +104,7 @@ println!("Solution: {:?}", solution);
 ### Arbitrary Precision
 
 ```rust
-use mathcore::precision::{PrecisionNumber, ArbitraryPrecision};
+use mathcore_nostd::precision::{PrecisionNumber, ArbitraryPrecision};
 
 // Exact rational arithmetic
 let a = PrecisionNumber::from_str_with_precision("1/3").unwrap();
@@ -119,7 +120,7 @@ println!("π ≈ {}", pi);
 ### Optimization and Calculus
 
 ```rust
-use mathcore::ml::{Optimization, SymbolicIntegration};
+use mathcore_nostd::ml::{Optimization, SymbolicIntegration};
 use alloc::collections::BTreeMap
 
 // Compute gradient

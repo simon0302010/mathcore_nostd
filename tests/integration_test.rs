@@ -1,6 +1,6 @@
 extern crate alloc;
 
-use mathcore::{Expr, MathCore};
+use mathcore_nostd::{Expr, MathCore};
 use alloc::collections::BTreeMap;
 
 #[test]

@@ -1,11 +1,11 @@
 [package]
-name = "mathcore"
+name = "mathcore_nostd"
 version = "0.3.1"
 edition = "2021"
-authors = ["Mehmet Yilmaz <mehmet@nonanti.dev>"]
-description = "Symbolic math library and computer algebra system for Rust"
+authors = ["Mehmet Yilmaz <mehmet@nonanti.dev>", "simon0302010 <simon@hackclub.app>"]
+description = "Symbolic math library and computer algebra system for Rust. Forked to work in no_std environments."
 license = "MIT"
-repository = "https://github.com/Nonanti/mathcore"
+repository = "https://github.com/simon0302010/mathcore_nostd"
 keywords = ["math", "symbolic", "algebra", "calculus", "cas"]
 categories = ["mathematics", "science"]
 

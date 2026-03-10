@@ -17,7 +17,7 @@ jobs:
       id: check
       run: |
         VERSION=$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].version')
-        if cargo search mathcore --limit 1 | grep -q "mathcore = \"$VERSION\""; then
+        if cargo search mathcore_nostd --limit 1 | grep -q "mathcore_nostd = \"$VERSION\""; then
           echo "Version $VERSION already exists on crates.io"
           echo "exists=true" >> $GITHUB_OUTPUT
         else

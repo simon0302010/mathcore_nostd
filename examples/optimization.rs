@@ -1,7 +1,7 @@
 extern crate alloc;
 
-use mathcore::ml::Optimization;
-use mathcore::parser::Parser;
+use mathcore_nostd::ml::Optimization;
+use mathcore_nostd::parser::Parser;
 use alloc::collections::BTreeMap;
 
 fn main() {
@@ -120,7 +120,7 @@ fn taylor_series_example() {
     println!("sin(x) Taylor series (order 9) vs actual:");
     println!("x\tTaylor\t\tActual\t\tError");
 
-    use mathcore::engine::Engine;
+    use mathcore_nostd::engine::Engine;
     let engine = Engine::new();
 
     for x in [0.1, 0.5, 1.0, 1.5] {
@@ -130,7 +130,7 @@ fn taylor_series_example() {
         let taylor_val = engine.evaluate_with_vars(&sin_taylor, &vars).unwrap();
         let actual = x.sin();
 
-        if let mathcore::Expr::Number(t) = taylor_val {
+        if let mathcore_nostd::Expr::Number(t) = taylor_val {
             let error = (t - actual).abs();
             println!("{:.1}\t{:.6}\t{:.6}\t{:.2e}", x, t, actual, error);
         }

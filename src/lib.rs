@@ -6,7 +6,7 @@
 //! solve equations, differentiate, integrate, etc.
 //!
 //! ```rust
-//! use mathcore::MathCore;
+//! use mathcore_nostd::MathCore;
 //!
 //! let math = MathCore::new();
 //!

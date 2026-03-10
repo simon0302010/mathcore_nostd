@@ -113,7 +113,7 @@ Example documentation:
 /// # Examples
 ///
 /// ```
-/// use mathcore::factorial;
+/// use mathcore_nostd::factorial;
 /// 
 /// assert_eq!(factorial(5), 120);
 /// ```

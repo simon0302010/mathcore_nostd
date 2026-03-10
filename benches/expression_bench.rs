@@ -1,6 +1,6 @@
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
-use mathcore::differential::DifferentialEquations;
-use mathcore::{calculus::Calculus, engine::Engine, parser::Parser};
+use mathcore_nostd::differential::DifferentialEquations;
+use mathcore_nostd::{calculus::Calculus, engine::Engine, parser::Parser};
 
 fn parse_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("parsing");
@@ -87,7 +87,7 @@ fn integration_benchmark(c: &mut Criterion) {
 }
 
 fn solver_benchmark(c: &mut Criterion) {
-    use mathcore::solver::Solver;
+    use mathcore_nostd::solver::Solver;
 
     let mut group = c.benchmark_group("solver");
 
@@ -108,7 +108,7 @@ fn solver_benchmark(c: &mut Criterion) {
 }
 
 fn matrix_benchmark(c: &mut Criterion) {
-    use mathcore::matrix::SymbolicMatrix;
+    use mathcore_nostd::matrix::SymbolicMatrix;
 
     let mut group = c.benchmark_group("matrix");
 
@@ -171,7 +171,7 @@ fn ode_benchmark(c: &mut Criterion) {
 }
 
 fn precision_benchmark(c: &mut Criterion) {
-    use mathcore::precision::{ArbitraryPrecision, PrecisionNumber};
+    use mathcore_nostd::precision::{ArbitraryPrecision, PrecisionNumber};
 
     let mut group = c.benchmark_group("arbitrary_precision");
 

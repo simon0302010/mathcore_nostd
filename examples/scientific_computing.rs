@@ -1,5 +1,5 @@
-use mathcore::differential::{DifferentialEquations, PDESolver};
-use mathcore::parser::Parser;
+use mathcore_nostd::differential::{DifferentialEquations, PDESolver};
+use mathcore_nostd::parser::Parser;
 
 fn main() {
     println!("Scientific Computing Examples\n");
